@@ -1,0 +1,13 @@
+- `Gdd`, `ggdd` delete first and last lines
+- Macro to format a single element (register `e`)
+  - Go to line with `<name>`
+  - `qe^r"f>s": "<ESC>f<C"<ESC>q`
+- Macro to format a person
+  - Go to line with `<person>`
+  - `qpS{<ESC>j@eA,<ESC>j@ejS},<ESC>q`
+- Macro to format a person and go to the next person
+  - Go to line with `<person>`
+  - `qq@pjq`
+- Execute macro until end of file
+  - `999@q`
+- Manually remove last `,`, and add `[` and `]` delimiters
