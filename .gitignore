@@ -1,0 +1,5 @@
+# Ignore executable
+*.out
+
+# Ignore IDE specific files
+.vscode/
