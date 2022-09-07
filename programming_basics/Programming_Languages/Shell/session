@@ -1,0 +1,17 @@
+登录 Session 一般进行整个系统环境的初始化，启动的初始化脚本依次如下。
+
+/etc/profile：所有用户的全局配置脚本。
+/etc/profile.d: 目录里面所有.sh文件
+~/.bash_profile：用户的个人配置脚本。如果该脚本存在，则执行完就不再往下执行。
+~/.bash_login：如果~/.bash_profile没找到，则尝试执行这个脚本（C shell 的初始化脚本）。如果该脚本存在，则执行完就不再往下执行。
+~/.profile：如果~/.bash_profile和~/.bash_login都没找到，则尝试读取这个脚本（Bourne shell 和 Korn shell 的初始化脚本）。
+
+
+
+非登录 Session 的初始化脚本依次如下
+
+/etc/bash.bashrc：对全体用户有效。
+~/.bashrc：仅对当前用户有效。
+
+
+~/.bash_logout脚本在每次退出 Session 时执行，通常用来做一些清理工作和记录工作，比如删除临时文件，记录用户在本次 Session 花费的时间。

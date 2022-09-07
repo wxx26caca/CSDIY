@@ -1,0 +1,19 @@
+for filename; do
+  echo "$filename"
+done
+
+# 等同于
+
+for filename in "$@" ; do
+  echo "$filename"
+done
+
+
+for (( expression1; expression2; expression3 )); do
+  commands
+done
+
+
+break命令立即终止循环，程序继续执行循环块之后的语句，即不再执行剩下的循环
+continue命令立即终止本轮循环，开始执行下一轮循环
+

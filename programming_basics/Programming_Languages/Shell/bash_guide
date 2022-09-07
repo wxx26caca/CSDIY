@@ -1,0 +1,153 @@
+cp a.log{,.bak} == cp a.log a.log.bak
+
+echo {a..c} == a b c
+
+echo {0..8..2} == 0 2 4 6 8 
+
+${!string*}或${!string@}返回所有匹配给定字符串string的变量名
+
+```
+$ cat <<< 'hi there'
+# 等同于
+$ echo 'hi there' | cat
+
+$ md5sum <<< 'ddd'
+# 等同于
+$ echo 'ddd' | md5sum
+```
+
+f=$((5 * 7))  // 算术计算
+在$((...))里面使用字符串，Bash 会认为那是一个变量名。如果不存在同名变量，Bash 就会将其作为空值，因此不会报错。
+算术表达式中，可以使用其他进制
+number：没有任何特殊表示法的数字是十进制数（以10为底）。
+0number：八进制数。
+0xnumber：十六进制数。      echo $((0xff)) == 255
+base#number：base进制的数。  echo $((2#11111111)) == 255
+
+如果变量的值本身也是变量，可以使用${!varname}的语法，读取最终的值。
+
+$? 为上一个命令的退出码，用来判断上一个命令是否执行成功。返回值是0，表示上一个命令执行成功；如果是非零，上一个命令执行失败。
+$$ 为当前 Shell 的进程 ID。
+$_ 为上一个命令的最后一个参数。
+$! 为最近一个后台执行的异步命令的进程 ID。
+$0 为当前 Shell 的名称（在命令行直接执行是）或者脚本名（在脚本中执行时）。
+$- 为当前 Shell 的启动参数。
+$@ 表示脚本的参数数量
+$# 表示脚本的参数数量
+!! Entire last command, including arguments
+
+${varname:-word}      如果变量varname存在且不为空，则返回它的值，否则返回word
+${varname:=word}      如果变量varname存在且不为空，则返回它的值，否则将它设为word，并且返回word
+${varname:+word}      如果变量名存在且不为空，则返回word，否则返回空值。
+${varname:?message}   如果变量varname存在且不为空，则返回它的值，否则打印出varname: message，并中断脚本的执行。
+varname的部分可以用到数字1到9，表示脚本的参数
+
+declare命令可以声明一些特殊类型的变量
+readonly命令等同于declare -r，用来声明只读变量，不能改变变量值，也不能unset变量
+let命令声明变量时，可以直接执行算术表达式
+
+${#varname}    获取字符串长度
+
+${varname:offset:length}    字符串提取子串    //只能通过变量来读取字符串
+如果省略length，则从位置offset开始，一直返回到字符串的结尾。
+如果offset为负值，表示从字符串的末尾开始算起。注意，负数前面必须有一个空格
+
+字符串头部的模式匹配
+${variable#pattern}    //如果 pattern 匹配变量 variable 的开头，删除最短匹配（非贪婪匹配）的部分，返回剩余部分
+${variable##pattern}   //如果 pattern 匹配变量 variable 的开头，删除最长匹配（贪婪匹配）的部分，返回剩余部分
+${variable/#pattern/string}    //将头部匹配的部分，替换成其他内容
+
+字符串尾部的模式匹配
+${variable%pattern}   //如果 pattern 匹配变量 variable 的结尾，删除最短匹配（非贪婪匹配）的部分，返回剩余部分
+${variable%%pattern}  //如果 pattern 匹配变量 variable 的结尾，删除最长匹配（贪婪匹配）的部分，返回剩余部分
+${variable/%pattern/string}   //将尾部匹配的部分，替换成其他内容
+
+任意位置的模式匹配
+${variable/pattern/string}    //如果 pattern 匹配变量 variable 的一部分，最长匹配（贪婪匹配）的那部分被 string 替换，但仅替换第一个匹配
+${variable//pattern/string}   //如果 pattern 匹配变量 variable 的一部分，最长匹配（贪婪匹配）的那部分被 string 替换，所有匹配都替换
+
+${varname^^}    //转为大写
+${varname,,}    //转为小写
+
+位运算
+<<：位左移运算，把一个数字的所有位向左移动指定的位。
+>>：位右移运算，把一个数字的所有位向右移动指定的位。
+&：位的“与”运算，对两个数字的所有位执行一个AND操作。
+|：位的“或”运算，对两个数字的所有位执行一个OR操作。
+~：位的“否”运算，对一个数字的所有位取反。
+!：逻辑“否”运算
+^：位的异或运算（exclusive or），对两个数字的所有位执行一个异或操作。
+
+逻辑运算
+<：小于
+>：大于
+<=：小于或相等
+>=：大于或相等
+==：相等
+!=：不相等
+&&：逻辑与
+||：逻辑或
+expr1?expr2:expr3：三元条件运算符。若表达式expr1的计算结果为非零值（算术真），则执行表达式expr2，否则执行表达式expr3。
+
+bash在名字冲突的情况下究竟该先以什么方式解释。优先顺序是：
+别名：alias
+关键字：keyword
+函数：function
+内建命令：built in
+哈西索引：hash    // hash is a shell builtin
+外部命令：command
+
+# 退出值为0（成功）
+$ exit 0
+
+# 退出值为1（失败）
+$ exit 1
+
+return命令是函数的退出，并返回一个值给调用者，脚本依然执行。
+exit是整个脚本的退出，如果在函数之中调用exit，则退出函数，并终止脚本执行。
+
+source命令最大的特点是在当前 Shell 执行脚本，不像直接执行脚本时，会新建一个子 Shell
+source命令的另一个用途，是在脚本内部加载外部库。
+
+Strings delimited with ' are literal strings and will not substitute variable values whereas " delimited strings will.
+$ foo = bar
+$ echo "$foo" 
+$ result is bar
+$ echo '$foo'
+$ result is $foo
+
+TLDR is a nifty complementary solution that focuses on giving examples use cases of a command so you can quickly figure out which options to use.
+e.g. 
+tldr tar
+tldr ffmpeg
+
+find command will recursively search for files matching some criteria.
+Some examples:
+
+# Find all directories named src
+find . -name src -type d
+
+# Find all python files that have a folder named test in their path
+find . -type f -path '*/test/*.py'
+
+# Find all files modified in the last day
+find . -mtime -1
+
+# Find all zip files with size in range 500k to 10M
+find . -size 500k -size 10M -name '*.tar.gz'
+
+# Delete all files with .tmp extension
+find . -name '*.tmp' -exec rm {} \;
+
+# Find all PNG files and convert them to JPG
+find . -name '*.png' -exec convert {} {}.jpg \;
+
+fd is a simple, fast, and user-friendly alternative to find
+locate uses a database that is updated using updatedb. In most systems, updatedb is updated daily via cron. locate is faster than find.
+
+Many grep alternatives have been developed, including ack, ag and rg.
+
+In most shells, you can make use of Ctrl+R to perform backwards search through your history.
+fzf(https://github.com/junegunn/fzf) is a general-purpose command-line fuzzy finder.
+history-based autosuggestions
+

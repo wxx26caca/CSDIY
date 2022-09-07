@@ -1,0 +1,47 @@
+declare -a ARRAYNAME
+
+read -a dice
+
+array=(a b c)
+array=([2]=c [0]=a [1]=b)
+days=([0]=Sun [1]=Mon [2]=Tue [3]=Wed [4]=Thu [5]=Fri [6]=Sat)
+
+
+读取数组指定位置的成员
+echo ${array[i]}
+
+
+@和*是数组的特殊索引，表示返回数组的所有成员。
+$ foo=(a b c d e f)
+$ echo ${foo[@]}
+a b c d e f
+
+
+推荐用法
+for act in "${activities[@]}";do
+    ...
+done
+
+
+数组的长度
+${#array[*]}
+${#array[@]}
+
+
+${!array[@]}或${!array[*]}，可以返回数组的成员序号，即哪些位置是有值的
+
+${array[@]:position:length}的语法可以提取数组成员
+
+数组末尾追加成员，可以使用 += 赋值运算符
+$ foo=(a b c)
+$ echo ${foo[@]}
+a b c
+
+$ foo+=(d e f)
+$ echo ${foo[@]}
+a b c d e f
+
+
+unset ArrayName可以清空整个数组
+foo=''   相当于删除数组的第一个成员
+unset foo[2]  删除了数组中的第三个元素，下标为2
